@@ -92,7 +92,6 @@ public class PlayerController : MonoBehaviour
         // handle drag
         if (grounded) {
             rb.drag = groundDrag;
-            anim.jumping = false;
         } else {
             rb.drag = 0;
         }
@@ -283,7 +282,6 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-        anim.jumping = true;
     }
 
     void ResetJump()

@@ -9,7 +9,7 @@ public class AnimationController : MonoBehaviour
     private PlayerController pc;
     private Rigidbody rb;
 
-    [HideInInspector] public bool jumping = false;
+    public bool jumping = false;
     
     // Start is called before the first frame update
     void Start()
@@ -32,17 +32,18 @@ public class AnimationController : MonoBehaviour
             anim.SetBool("Walking", false);
         }
         
-        // jumping check
-        anim.SetBool("Jumping", jumping);
-        
-        // falling set
-        if (jumping && pc.state == PlayerController.MovementState.air)
+        // falling and jumping set
+        if (!jumping && pc.state == PlayerController.MovementState.air)
         {
             anim.SetBool("Falling", true);
+            anim.SetBool("Jumping", true);
+            jumping = true;
         }
         else
         {
+            jumping = false;
             anim.SetBool("Falling", false);
+            anim.SetBool("Jumping", false);
         }
         
         // speed set
