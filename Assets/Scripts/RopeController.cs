@@ -19,7 +19,7 @@ public class RopeController : MonoBehaviour
 
      private void Start()
      {
-          rootRope = transform.GetChild(2);
+          rootRope = transform.Find("Rope Segment");
      }
 
      // Increase ropes by calling last rope segment's CreateNextRopeSegment() function.
