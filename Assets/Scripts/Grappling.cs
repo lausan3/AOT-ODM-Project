@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Grappling : MonoBehaviour
 {
@@ -9,8 +11,8 @@ public class Grappling : MonoBehaviour
     public float hookRange = 100f;
     public LayerMask hookable;
     public Transform hookPoint, camera, player;
+    public RawImage crosshair;
     private Vector3 grapplePoint;
-    private LineRenderer lr;
     private SpringJoint joint;
     private bool grappling;
     
@@ -27,7 +29,6 @@ public class Grappling : MonoBehaviour
     {
         grappling = false;
         
-        lr = GetComponent<LineRenderer>();
         hookPoint = transform.GetChild(1).GetComponent<Transform>();
         camera = GameObject.FindWithTag("Camera").transform;
         player = GameObject.FindWithTag("Player").transform;
@@ -35,15 +36,29 @@ public class Grappling : MonoBehaviour
     
     void FixedUpdate()
     {
-        // toggle grapple
+        DrawRope();
+        
+        // Change color of crosshair to red when object is within range
+        if (Physics.Raycast(camera.position, camera.forward, hookRange))
+        {
+            crosshair.color = Color.red;
+        } else
+        {
+            crosshair.color = Color.black;
+        }
+        
+        // Toggle grapple.
         if (Input.GetKeyDown(grappleKey) && !grappling)
         {
             StartCoroutine(Grapple(0.2f));
+        } else if (Input.GetKeyDown(grappleKey) && grappling)
+        {
+            Destroy(joint);
         }
     }
 
-    // This code is inspired by Dani's YouTube tutorial on grapple guns. Stopped at 5:17
-    // Currently can grapple with same key multiple times.
+    // This code is inspired by Dani's YouTube tutorial on grapple guns.
+    // TODO: Currently can grapple with same key multiple times.
     IEnumerator Grapple(float waitTime)
     {
         grappling = true;
@@ -67,7 +82,15 @@ public class Grappling : MonoBehaviour
         }
         
         yield return new WaitForSeconds(waitTime);
-
+        
         grappling = false;
+    }
+
+    // Also inspired by Dani's YouTube tutorial on grapple guns.
+    void DrawRope()
+    {
+        // If not grappling, don't draw rope
+        if (!joint) return;
+
     }
 }
