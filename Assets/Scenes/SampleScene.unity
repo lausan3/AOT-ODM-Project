@@ -286,7 +286,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Grapple Unit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 916446410817702547, guid: 686a1a61ab46066419c70a39a27f26eb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 686a1a61ab46066419c70a39a27f26eb, type: 3}
 --- !u!4 &102378443 stripped
 Transform:
