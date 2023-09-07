@@ -12,14 +12,9 @@ public class Grappling : MonoBehaviour
     public LayerMask hookable;
     public Transform hookPoint, camera, player;
     public RawImage crosshair;
+    private RopeController rope;
     private Vector3 grapplePoint;
-    private SpringJoint joint;
     private bool grappling;
-    
-    [Header("Joint Mod")]
-    public float jointSpringForce = 4.5f;
-    public float jointDamperForce = 7f;
-    public float jointMassScale = 4.5f;
 
     [Header("Keybinds")] 
     public KeyCode grappleKey;
@@ -32,6 +27,7 @@ public class Grappling : MonoBehaviour
         hookPoint = transform.GetChild(1).GetComponent<Transform>();
         camera = GameObject.FindWithTag("Camera").transform;
         player = GameObject.FindWithTag("Player").transform;
+        rope = GetComponent<RopeController>();
     }
     
     void FixedUpdate()
@@ -51,9 +47,6 @@ public class Grappling : MonoBehaviour
         if (Input.GetKeyDown(grappleKey) && !grappling)
         {
             StartCoroutine(Grapple(0.2f));
-        } else if (Input.GetKeyDown(grappleKey) && grappling)
-        {
-            Destroy(joint);
         }
     }
 
@@ -66,19 +59,21 @@ public class Grappling : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(camera.position, camera.forward, out hit, hookRange))
         {
-            grapplePoint = hit.point;
+            rope.IncreaseRopeSegments();
+            
+            // grapplePoint = hit.point;
             
             // Grapple joint
-            joint = player.gameObject.AddComponent<SpringJoint>();
-            joint.autoConfigureConnectedAnchor = false;
-            joint.connectedAnchor = grapplePoint;
+            // joint = player.gameObject.AddComponent<SpringJoint>();
+            // joint.autoConfigureConnectedAnchor = false;
+            // joint.connectedAnchor = grapplePoint;
 
             float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
             
-            // The distance grapple will try to keep from the grapple point.
-            joint.spring = jointSpringForce;
-            joint.damper = jointDamperForce;
-            joint.massScale = jointMassScale;
+            // Joint modification code:
+            // joint.spring = jointSpringForce;
+            // joint.damper = jointDamperForce;
+            // joint.massScale = jointMassScale;
         }
         
         yield return new WaitForSeconds(waitTime);
@@ -90,7 +85,7 @@ public class Grappling : MonoBehaviour
     void DrawRope()
     {
         // If not grappling, don't draw rope
-        if (!joint) return;
+        // if (!joint) return;
 
     }
 }

@@ -6,6 +6,8 @@ using UnityEngine;
 public class Rope : MonoBehaviour
 {
     public GameObject ropePrefab;
+
+    private Transform camera;
     
     #region Joint
     private RopeController rc;
@@ -17,20 +19,26 @@ public class Rope : MonoBehaviour
 
     private void Start()
     {
-        joint = GetComponent<HingeJoint>();
+        camera = GameObject.FindWithTag("Camera").transform;
         rc = GetComponentInParent<RopeController>();
     }
 
     // Create a new rope segment by instantiating it
     public void CreateNextRopeSegment()
     {
-        GameObject nextRopeSegment = Instantiate(ropePrefab, transform.up, transform.rotation);
-        
-        // Update ropes list
-        rc.ropes.Add((nextRopeSegment.transform));
-        
-        // Joint magic
-        connectedRope = nextRopeSegment;
-        joint.anchor = connectedRope.transform.position;
+        // Check for empty space in front of it
+        if (Physics.Raycast(transform.up, camera.forward, rc.ropeCheckRange))
+        {
+            
+            GameObject nextRopeSegment = Instantiate(ropePrefab, transform.up, transform.localRotation);
+            
+            // Update ropes list
+            rc.ropes.Add((nextRopeSegment.transform));
+            
+            // Joint magic
+            joint = gameObject.AddComponent<HingeJoint>();
+            connectedRope = nextRopeSegment;
+            joint.anchor = connectedRope.transform.position;
+        }
     }
 }

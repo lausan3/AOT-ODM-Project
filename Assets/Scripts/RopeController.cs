@@ -9,19 +9,40 @@ public class RopeController : MonoBehaviour
      [HideInInspector] 
      public List<Transform> ropes;
 
+     public float ropeCheckRange = 0.5f;
+
+     [Serialize] private Transform rootRope;
+
      [Header("Hinge Strength Mod")]
      public float springForce = 4.5f;
      public float spring = 7f;
-     
-     void IncreaseRopeSegments()
+
+     private void Start()
      {
-          Rope lastSegment = ropes[ropes.Count - 1].GetComponent<Rope>();
-          lastSegment.CreateNextRopeSegment();
+          rootRope = transform.GetChild(2);
+     }
+
+     // Increase ropes by calling last rope segment's CreateNextRopeSegment() function.
+     public void IncreaseRopeSegments()
+     {
+          Debug.Log("Called IncreaseRopeSegments()");
+          if (ropes.Count > 0)
+          {
+               Rope lastSegment = ropes[ropes.Count - 1].GetComponent<Rope>();
+               lastSegment.CreateNextRopeSegment();
+          }
+          else
+          {
+               rootRope.GetComponent<Rope>().CreateNextRopeSegment();
+          }
      }
      
      // Remove last rope segment by destroying it.
-     void DecreaseRopeSegments()
+     public void DecreaseRopeSegments() 
      {
-          Destroy(ropes[ropes.Count - 1]);
+          if (ropes.Count > 0)
+          {
+               Destroy(ropes[ropes.Count - 1]);
+          }
      }
 }
